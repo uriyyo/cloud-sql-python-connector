@@ -15,46 +15,23 @@
 name: Code Coverage
 on:
   pull_request:
-  pull_request_target:
-    types: [labeled]
 
 # Declare default permissions as read only.
 permissions: read-all
 
 jobs:
   coverage:
-    if: "${{ github.event.action != 'labeled' || github.event.label.name == 'tests: run' }}"
     runs-on: ubuntu-latest
-    permissions:
-      issues: write
-      pull-requests: write
     steps:
-      - name: Remove PR Label
-        if: "${{ github.event.action == 'labeled' && github.event.label.name == 'tests: run' }}"
-        uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            try {
-              await github.rest.issues.removeLabel({
-                name: 'tests: run',
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: context.payload.pull_request.number
-              });
-            } catch (e) {
-              console.log('Failed to remove label. Another job may have already removed it!');
-            }
-
       - name: Setup Python
-        uses: actions/setup-python@82c7e631bb3cdc910f68e0081d67478d79c6982d # v5.1.0
+        uses: actions/setup-python@f677139bbe7f9c59b41e40162b753c062f5d49a3 # v5.2.0
         with:
           python-version: "3.10"
 
       - run: pip install nox coverage
 
       - name: Checkout base branch
-        uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 # v4.1.6
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
         with:
           ref: ${{ github.base_ref }}
 
@@ -67,7 +44,7 @@ jobs:
           coverage erase
 
       - name: Checkout PR branch
-        uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 # v4.1.6
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
         with:
           ref: ${{ github.event.pull_request.head.sha }}
           repository: ${{ github.event.pull_request.head.repo.full_name }}

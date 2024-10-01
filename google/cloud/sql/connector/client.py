@@ -28,6 +28,7 @@ from google.auth.transport import requests
 from google.cloud.sql.connector.connection_info import ConnectionInfo
 from google.cloud.sql.connector.exceptions import AutoIAMAuthNotSupported
 from google.cloud.sql.connector.refresh_utils import _downscope_credentials
+from google.cloud.sql.connector.refresh_utils import retry_50x
 from google.cloud.sql.connector.version import __version__ as version
 
 if TYPE_CHECKING:
@@ -124,7 +125,10 @@ class CloudSQLClient:
 
         url = f"{self._sqladmin_api_endpoint}/sql/{API_VERSION}/projects/{project}/instances/{instance}/connectSettings"
 
-        resp = await self._client.get(url, headers=headers, raise_for_status=True)
+        resp = await self._client.get(url, headers=headers)
+        if resp.status >= 500:
+            resp = await retry_50x(self._client.get, url, headers=headers)
+        resp.raise_for_status()
         ret_dict = await resp.json()
 
         if ret_dict["region"] != region:
@@ -137,8 +141,13 @@ class CloudSQLClient:
             if "ipAddresses" in ret_dict
             else {}
         )
-        if "dnsName" in ret_dict:
-            ip_addresses["PSC"] = ret_dict["dnsName"]
+        # resolve dnsName into IP address for PSC
+        # Note that we have to check for PSC enablement also because CAS
+        # instances also set the dnsName field.
+        # Remove trailing period from DNS name. Required for SSL in Python
+        dns_name = ret_dict.get("dnsName", "").rstrip(".")
+        if dns_name and ret_dict.get("pscEnabled"):
+            ip_addresses["PSC"] = dns_name
 
         return {
             "ip_addresses": ip_addresses,
@@ -186,10 +195,10 @@ class CloudSQLClient:
             login_creds = _downscope_credentials(self._credentials)
             data["access_token"] = login_creds.token
 
-        resp = await self._client.post(
-            url, headers=headers, json=data, raise_for_status=True
-        )
-
+        resp = await self._client.post(url, headers=headers, json=data)
+        if resp.status >= 500:
+            resp = await retry_50x(self._client.post, url, headers=headers, json=data)
+        resp.raise_for_status()
         ret_dict = await resp.json()
 
         ephemeral_cert: str = ret_dict["ephemeralCert"]["cert"]

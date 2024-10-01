@@ -19,9 +19,9 @@ limitations under the License.
 import datetime
 import json
 import ssl
-from tempfile import TemporaryDirectory
 from typing import Any, Callable, Dict, Literal, Optional, Tuple
 
+from aiofiles.tempfile import TemporaryDirectory
 from aiohttp import web
 from cryptography import x509
 from cryptography.hazmat.backends import default_backend
@@ -203,8 +203,8 @@ async def create_ssl_context() -> ssl.SSLContext:
     # build default ssl.SSLContext
     context = ssl.create_default_context()
     # load ssl.SSLContext with certs
-    with TemporaryDirectory() as tmpdir:
-        ca_filename, cert_filename, key_filename = write_to_file(
+    async with TemporaryDirectory() as tmpdir:
+        ca_filename, cert_filename, key_filename = await write_to_file(
             tmpdir, server_ca_cert, ephemeral_cert, client_private
         )
         context.load_cert_chain(cert_filename, keyfile=key_filename)
@@ -234,6 +234,7 @@ class FakeCSQLInstance:
         self.name = name
         self.db_version = db_version
         self.ip_addrs = ip_addrs
+        self.psc_enabled = False
         self.cert_before = cert_before
         self.cert_expiration = cert_expiration
         # create self signed CA cert
@@ -255,6 +256,7 @@ class FakeCSQLInstance:
                 "expirationTime": str(self.cert_expiration),
             },
             "dnsName": "abcde.12345.us-central1.sql.goog",
+            "pscEnabled": self.psc_enabled,
             "ipAddresses": ip_addrs,
             "region": self.region,
             "databaseVersion": self.db_version,

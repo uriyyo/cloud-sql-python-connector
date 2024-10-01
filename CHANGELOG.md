@@ -1,5 +1,45 @@
 # Changelog
 
+## [1.12.1](https://github.com/GoogleCloudPlatform/cloud-sql-python-connector/compare/v1.12.0...v1.12.1) (2024-09-17)
+
+
+### Bug Fixes
+
+* set PSC ip type based on `pscEnabled` ([#1158](https://github.com/GoogleCloudPlatform/cloud-sql-python-connector/issues/1158)) ([53e40c7](https://github.com/GoogleCloudPlatform/cloud-sql-python-connector/commit/53e40c7dbec8f27e2e3e6e344bf87e08cf15c3e9))
+
+## [1.12.0](https://github.com/GoogleCloudPlatform/cloud-sql-python-connector/compare/v1.11.0...v1.12.0) (2024-08-13)
+
+
+### Features
+
+* use non-blocking disk read/writes ([#1142](https://github.com/GoogleCloudPlatform/cloud-sql-python-connector/issues/1142)) ([d2fd465](https://github.com/GoogleCloudPlatform/cloud-sql-python-connector/commit/d2fd46523fae041ec8b4e907e4d0eeb204f0aa8f))
+
+
+### Dependencies
+
+* update python non-major dependencies ([#1149](https://github.com/GoogleCloudPlatform/cloud-sql-python-connector/issues/1149)) ([2e27c05](https://github.com/GoogleCloudPlatform/cloud-sql-python-connector/commit/2e27c05acb2d579127b892a7ed5860a9404c9f53))
+
+## [1.11.0](https://github.com/GoogleCloudPlatform/cloud-sql-python-connector/compare/v1.10.0...v1.11.0) (2024-07-10)
+
+
+### Features
+
+* invalidate cache on bad connection info and IP lookup ([#1118](https://github.com/GoogleCloudPlatform/cloud-sql-python-connector/issues/1118)) ([672dc4e](https://github.com/GoogleCloudPlatform/cloud-sql-python-connector/commit/672dc4e8b853e5b2ac1b44da889466b6693381da))
+
+
+### Bug Fixes
+
+* let DNS resolve outside connector ([#1120](https://github.com/GoogleCloudPlatform/cloud-sql-python-connector/issues/1120)) ([d321f79](https://github.com/GoogleCloudPlatform/cloud-sql-python-connector/commit/d321f79dffebb7c630ba4f4c14dd36aa1a532798))
+* retry 50x errors with exponential backoff ([#1125](https://github.com/GoogleCloudPlatform/cloud-sql-python-connector/issues/1125)) ([2da9128](https://github.com/GoogleCloudPlatform/cloud-sql-python-connector/commit/2da9128cb1e46e713fe79094f1903f79e5a4cb64))
+
+## [1.10.0](https://github.com/GoogleCloudPlatform/cloud-sql-python-connector/compare/v1.9.2...v1.10.0) (2024-06-11)
+
+
+### Features
+
+* add support for lazy refresh strategy ([#1093](https://github.com/GoogleCloudPlatform/cloud-sql-python-connector/issues/1093)) ([b9526bb](https://github.com/GoogleCloudPlatform/cloud-sql-python-connector/commit/b9526bbd31304754c9099be17b5178f9ba43b92c))
+* validate driver with database engine ([#1108](https://github.com/GoogleCloudPlatform/cloud-sql-python-connector/issues/1108)) ([a7c7861](https://github.com/GoogleCloudPlatform/cloud-sql-python-connector/commit/a7c7861884fd95b28ec52d22cd6824f4d86db392))
+
 ## [1.9.2](https://github.com/GoogleCloudPlatform/cloud-sql-python-connector/compare/v1.9.1...v1.9.2) (2024-05-14)
 
 
