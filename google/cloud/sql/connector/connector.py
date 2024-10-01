@@ -268,7 +268,7 @@ class Connector:
                 "Running event loop does not match 'connector._loop'. "
                 "Connector.connect_async() must be called from the event loop "
                 "the Connector was initialized with. If you need to connect "
-                "across event loops/threads please use a new Connector object."
+                "across event loops, please use a new Connector object."
             )
 
         if self._keys is None:
